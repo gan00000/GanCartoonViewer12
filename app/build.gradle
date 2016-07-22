@@ -1,0 +1,105 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
+
+    defaultConfig {
+        applicationId "com.hippo.ehviewer"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 65
+        versionName "1.0.12"
+        vectorDrawables.useSupportLibrary = true
+        resConfigs "zh", "zh-rCN", "zh-rHK", "zh-rTW"
+
+        jackOptions {
+            enabled true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        incremental true
+    }
+
+    lintOptions {
+        abortOnError true
+    }
+
+
+    //需要在buildTypes前面  before your buildTypes
+    signingConfigs {
+
+        releaseconfig1 {
+            keyAlias 'egame'
+            keyPassword 'Efun0619'
+            storeFile file('C:/Users/Efun/Desktop/侵权发布研究/efunsignapp.keystone')
+            storePassword 'Efun0619'
+        }
+
+    }
+
+    buildTypes {
+        release {
+            //shrinkResources true
+            minifyEnabled false
+            
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseconfig1
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/java-gen'
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+task copyNotice(type: Copy) {
+    from '../NOTICE.html'
+    into './src/main/assets'
+    finalizedBy ":daogenerator:executeDaoGenerator"
+}
+
+tasks.withType(AbstractCompile) {
+    compileTask -> compileTask.dependsOn copyNotice
+}
+
+clean {
+    delete file('src/main/assets/NOTICE.html').absolutePath
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
+    compile 'com.github.seven332:animator:0.1.0'
+    compile 'com.github.seven332:beerbelly:0.1.4'
+    compile 'com.github.seven332:conaco:0.1.5-eh'
+    compile 'com.github.seven332:drawerlayout:0.1.0'
+    compile 'com.github.seven332:easyrecyclerview:0.1.0'
+    compile 'com.github.seven332:glgallery:0.1.2'
+    compile 'com.github.seven332:glview:0.1.0'
+    compile 'com.github.seven332:glview-image:0.1.0'
+    compile 'com.github.seven332:hotspot:0.1.0'
+    compile 'com.github.seven332:image:0.1.12'
+    compile 'com.github.seven332:okhttp:3.3.1-eh'
+    compile 'com.github.seven332:refreshlayout:0.1.0'
+    compile 'com.github.seven332:ripple:0.1.1'
+    compile 'com.github.seven332:streampipe:0.1.0'
+    compile 'com.github.seven332:tuxiang:0.1.2'
+    compile 'com.github.seven332:unifile:0.1.4'
+    compile 'com.github.seven332:yorozuya:0.1.2'
+    compile 'com.github.seven332:yorozuya-thread:0.1.1'
+    compile 'com.github.seven332:yorozuya-collect:0.1.4'
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.9.1'
+    compile 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
+    compile 'org.greenrobot:greendao:2.2.0'
+    compile 'org.jsoup:jsoup:1.9.2'
+    //    testCompile 'junit:junit:4.12'
+}
